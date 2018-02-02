@@ -28,9 +28,14 @@ def get_email_of_a_lawyer(page_url)
 	#get email of each lawyer of the office
 	emailOther = page.xpath('//div[@class="notaireItem secondaire"]//a[@class="goToMail"]').map{|x| x.text.rstrip}
 
-	binding.pry
+	contact = []
+	contact << { :nameOffice=>nameOffice, :streetAdress=>streetAdress , :postCode=>postCode, :town=>town, :email=>email, :nameOtherLawyer=>nameOtherLawyer, :emailOther=>emailOther}
+
+	#return nameOffice, streetAdress , postCode, town, email, nameOtherLawyer, emailOther
+	return contact
 end
 
 page_url = "https://www.immonot.com/annuaire-notaires-paris/0000014050/mes-sandra-abitbol-et-emmanuelle-le-gall-abramczyk.html"
 
-get_email_of_a_lawyer(page_url)
+lawyer=get_email_of_a_lawyer(page_url)
+binding.pry
