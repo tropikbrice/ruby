@@ -35,7 +35,25 @@ def get_email_of_a_lawyer(page_url)
 	return contact
 end
 
-page_url = "https://www.immonot.com/annuaire-notaires-paris/0000014050/mes-sandra-abitbol-et-emmanuelle-le-gall-abramczyk.html"
+# page_url = "https://www.immonot.com/annuaire-notaires-paris/0000014050/mes-sandra-abitbol-et-emmanuelle-le-gall-abramczyk.html"
 
-lawyer=get_email_of_a_lawyer(page_url)
-binding.pry
+# lawyer=get_email_of_a_lawyer(page_url)
+
+#get all url of department
+def get_all_url_of_department(page_url)
+	page = Nokogiri::HTML(open(page_url))
+
+	url = page.xpath('//div[@class="notaireItem"]//h2//a')
+	url = page.xpath('//div[@class="notaireItem"]//span[@itemprop="name"]//h2')
+
+	urlList = []
+
+	url.each do |x|
+		urlList << { nameOffice:x.text, url:"https://www.immonot.com"+ x[:href] }
+	end
+
+	binding.pry
+end
+
+page_url = "https://www.immonot.com/annuaire-notaires/01/notaires-ain-01.html"
+get_all_url_of_department(page_url)
