@@ -43,11 +43,12 @@ end
 def get_all_url_of_department(page_url)
 	page = Nokogiri::HTML(open(page_url))
 
-	url = page.xpath('//div[@class="notaireItem"]//h2//a')
-	url = page.xpath('//div[@class="notaireItem"]//span[@itemprop="name"]//h2')
+	#to do : loop on pageList (number of page)
+
+	#get links
+	url = page.xpath('//div[@class="notaireItem "]//h2//a')
 
 	urlList = []
-
 	url.each do |x|
 		urlList << { nameOffice:x.text, url:"https://www.immonot.com"+ x[:href] }
 	end
