@@ -14,9 +14,10 @@ def get_email_of_a_lawyer(page_url)
 	nameOffice = page.xpath('//span[@itemprop="name"]/h1').text.rstrip
 	#get adress of the main office
 	streetAdress = page.xpath('//div[@class="notaireItem"]//span[@itemprop="streetAddress"]').text.rstrip
-	#get postcode & town
-	addressLocality= page.xpath('//div[@class="notaireItem"]//span[@itemprop="addressLocality"]').text
-	postcode = addressLocality[0..4]
+	#streetAdress = page.xpath('//div[@class="notaireItem"]//span[@itemprop="streetAddress"]').map{|x| x.text.rstrip}
+	#get postCode & town
+	addressLocality= page.xpath('//div[@class="notaireItem"]//span[@itemprop="addressLocality"]').text.rstrip
+	postCode = addressLocality[0..4]
 	town = addressLocality[6..addressLocality.length-1]
 
 	#OTHER OFFICE
@@ -26,7 +27,6 @@ def get_email_of_a_lawyer(page_url)
 	email = page.xpath('//div[@class="notaireItem secondaire"]//a[@class="goToMail"]').map{|x| x.text.rstrip}
 
 	binding.pry
-	puts tt #, "----", email, "-----", "nameOtherLawyer"
 end
 
 page_url = "https://www.immonot.com/annuaire-notaires-paris/0000014050/mes-sandra-abitbol-et-emmanuelle-le-gall-abramczyk.html"
