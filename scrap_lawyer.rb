@@ -9,16 +9,24 @@ def get_email_of_a_lawyer(page_url)
 	# parse html
 	page = Nokogiri::HTML(open(page_url))
 
-	#get directly name of office
-	name_office = page.xpath('//span[@itemprop="name"]/h1').text.rstrip
+	#MAIN OFFICE
+	#get name of the main office
+	nameOffice = page.xpath('//span[@itemprop="name"]/h1').text.rstrip
+	#get adress of the main office
+	streetAdress = page.xpath('//div[@class="notaireItem"]//span[@itemprop="streetAddress"]').text.rstrip
+	#get postcode & town
+	addressLocality= page.xpath('//div[@class="notaireItem"]//span[@itemprop="addressLocality"]').text
+	postcode = addressLocality[0..4]
+	town = addressLocality[6..addressLocality.length-1]
 
-	#get name of each lawyer
-	name_lawyer = page.xpath('//span[@itemprop="name"]/strong').map{|x| x.text.rstrip}
-
-	email = page.xpath('//a[@class="goToMail"]').map{|x| x.text.rstrip}
+	#OTHER OFFICE
+	#get name of each employe lawyer of the office
+	nameOtherLawyer = page.xpath('//div[@class="notaireItem secondaire"]//span[@itemprop="name"]/strong').map{|x| x.text.rstrip}
+	#get email of each lawyer of the office
+	email = page.xpath('//div[@class="notaireItem secondaire"]//a[@class="goToMail"]').map{|x| x.text.rstrip}
 
 	binding.pry
-	puts tt #, "----", email, "-----", "name_lawyer"
+	puts tt #, "----", email, "-----", "nameOtherLawyer"
 end
 
 page_url = "https://www.immonot.com/annuaire-notaires-paris/0000014050/mes-sandra-abitbol-et-emmanuelle-le-gall-abramczyk.html"
