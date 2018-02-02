@@ -18,13 +18,15 @@ def get_email_of_a_lawyer(page_url)
 	#get postCode & town
 	addressLocality= page.xpath('//div[@class="notaireItem"]//span[@itemprop="addressLocality"]').text.rstrip
 	postCode = addressLocality[0..4]
-	town = addressLocality[6..addressLocality.length-1]
+	town = addressLocality[6..-1]
+	#get main email (if there are several emails)
+	email = page.xpath('//div[@class="notaireItem"]//span[@itemprop="email"]').map{|x| x.text.rstrip[3..-1]}
 
 	#OTHER OFFICE
 	#get name of each employe lawyer of the office
 	nameOtherLawyer = page.xpath('//div[@class="notaireItem secondaire"]//span[@itemprop="name"]/strong').map{|x| x.text.rstrip}
 	#get email of each lawyer of the office
-	email = page.xpath('//div[@class="notaireItem secondaire"]//a[@class="goToMail"]').map{|x| x.text.rstrip}
+	emailOther = page.xpath('//div[@class="notaireItem secondaire"]//a[@class="goToMail"]').map{|x| x.text.rstrip}
 
 	binding.pry
 end
