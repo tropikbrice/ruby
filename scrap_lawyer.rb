@@ -44,28 +44,20 @@ end
 def get_all_url_of_department(page_url)
 	page = Nokogiri::HTML(open(page_url))
 
-	# #to do : loop on pageList (number of page)
-	# #get links
-	# url = page.xpath('//div[@class="notaireItem "]//h2//a')
-
-	# urlList = []
-	# url.each do |x|
-	# 	urlList << { nameOffice:x.text, url:"https://www.immonot.com"+ x[:href] }
-	# end
-
 	##########################
 	urlPages = page.xpath('//ul[@class="pageList pull-right"]//a')
 
 	#loop on page number, working even page number =1 !!!
 	urlPagesSize = (urlPages.size-1)/2
 	urlPagesList = []
-	for i in 0..urlPagesSize-1
-		urlPagesList << "https://www.immonot.com"+ urlPages[i][:href]	
-	end
-
 	urlList = []
-	urlPagesList.each do |urlToScrap|
-		page2 = Nokogiri::HTML(open( urlToScrap ))
+	for i in 0..urlPagesSize-1
+		urlPagesList = "https://www.immonot.com"+ urlPages[i][:href]
+		puts urlPagesList	
+		#end
+
+		# urlPagesList.each do |urlToScrap|
+		page2 = Nokogiri::HTML(open( urlPagesList ))
 
 		link = page2.xpath('//div[@class="notaireItem "]//h2//a')
 		link.each do |x|
@@ -73,8 +65,25 @@ def get_all_url_of_department(page_url)
 		end
 	end
 
-	binding.pry
+	# binding.pry
+	return urlList
 end
 
-page_url = "https://www.immonot.com/annuaire-notaires/23/notaires-creuse-23.html"
-get_all_url_of_department(page_url)
+# page_url = "https://www.immonot.com/annuaire-notaires/23/notaires-creuse-23.html"
+# get_all_url_of_department(page_url)
+
+def get_url_of_france()
+	page_url = "https://www.immonot.com/annuaire-des-notaires-de-france.html"
+
+	scrapPage = Nokogiri::HTML(open(page_url))
+
+	urlDpt = scrapPage.xpath('//map[@name="departements"]//area')
+
+	urlDptList=[]
+	urlDpt.each do |xdpt|
+		urlDptList << { nameDpt:xdpt[:title], url:"https://www.immonot.com"+ xdpt[:href] }
+	end
+
+	return urlDptList
+end
+urlDptList=get_url_of_france()
