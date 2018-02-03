@@ -32,6 +32,7 @@ def get_email_of_a_lawyer(page_url)
 	contact << { :nameOffice=>nameOffice, :streetAdress=>streetAdress , :postCode=>postCode, :town=>town, :email=>email, :nameOtherLawyer=>nameOtherLawyer, :emailOther=>emailOther}
 
 	#return nameOffice, streetAdress , postCode, town, email, nameOtherLawyer, emailOther
+	# binding.pry
 	return contact
 end
 
@@ -43,18 +44,37 @@ end
 def get_all_url_of_department(page_url)
 	page = Nokogiri::HTML(open(page_url))
 
-	#to do : loop on pageList (number of page)
+	# #to do : loop on pageList (number of page)
+	# #get links
+	# url = page.xpath('//div[@class="notaireItem "]//h2//a')
 
-	#get links
-	url = page.xpath('//div[@class="notaireItem "]//h2//a')
+	# urlList = []
+	# url.each do |x|
+	# 	urlList << { nameOffice:x.text, url:"https://www.immonot.com"+ x[:href] }
+	# end
+
+	##########################
+	urlPages = page.xpath('//ul[@class="pageList pull-right"]//a')
+
+	#loop on page number, working even page number =1 !!!
+	urlPagesSize = (urlPages.size-1)/2
+	urlPagesList = []
+	for i in 0..urlPagesSize-1
+		urlPagesList << "https://www.immonot.com"+ urlPages[i][:href]	
+	end
 
 	urlList = []
-	url.each do |x|
-		urlList << { nameOffice:x.text, url:"https://www.immonot.com"+ x[:href] }
+	urlPagesList.each do |urlToScrap|
+		page2 = Nokogiri::HTML(open( urlToScrap ))
+
+		link = page2.xpath('//div[@class="notaireItem "]//h2//a')
+		link.each do |x|
+			urlList << { nameOffice:x.text, url:"https://www.immonot.com"+ x[:href] }
+		end
 	end
 
 	binding.pry
 end
 
-page_url = "https://www.immonot.com/annuaire-notaires/01/notaires-ain-01.html"
+page_url = "https://www.immonot.com/annuaire-notaires/23/notaires-creuse-23.html"
 get_all_url_of_department(page_url)
