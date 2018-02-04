@@ -5,7 +5,8 @@ require 'nokogiri'
 require 'open-uri'
 require 'pry'
 
-def get_email_of_a_lawyer(page_url)
+def get_contact_of_a_lawyer(page_url)
+	# get contact information for one lawyer from his url
 	# parse html
 	page = Nokogiri::HTML(open(page_url))
 
@@ -28,19 +29,17 @@ def get_email_of_a_lawyer(page_url)
 	#get email of each lawyer of the office
 	emailOther = page.xpath('//div[@class="notaireItem secondaire"]//a[@class="goToMail"]').map{|x| x.text.rstrip}
 
-	contact = []
-	contact << { :nameOffice=>nameOffice, :streetAdress=>streetAdress , :postCode=>postCode, :town=>town, :email=>email, :nameOtherLawyer=>nameOtherLawyer, :emailOther=>emailOther}
+	contact = Hash.new
+	contact = { :nameOffice=>nameOffice, :streetAdress=>streetAdress , :postCode=>postCode, :town=>town, :email=>email, :nameOtherLawyer=>nameOtherLawyer, :emailOther=>emailOther}
 
 	#return nameOffice, streetAdress , postCode, town, email, nameOtherLawyer, emailOther
 	# binding.pry
 	return contact
 end
-
 # page_url = "https://www.immonot.com/annuaire-notaires-paris/0000014050/mes-sandra-abitbol-et-emmanuelle-le-gall-abramczyk.html"
+# lawyer=get_contact_of_a_lawyer(page_url)
 
-# lawyer=get_email_of_a_lawyer(page_url)
-
-#get all url of department
+#get all url of lawyers for one given department
 def get_all_url_of_department(page_url)
 	page = Nokogiri::HTML(open(page_url))
 
@@ -53,8 +52,6 @@ def get_all_url_of_department(page_url)
 	urlList = []
 	for i in 0..urlPagesSize-1
 		urlPagesList = "https://www.immonot.com"+ urlPages[i][:href]
-		puts urlPagesList	
-		#end
 
 		# urlPagesList.each do |urlToScrap|
 		page2 = Nokogiri::HTML(open( urlPagesList ))
@@ -68,10 +65,10 @@ def get_all_url_of_department(page_url)
 	# binding.pry
 	return urlList
 end
-
 # page_url = "https://www.immonot.com/annuaire-notaires/23/notaires-creuse-23.html"
 # get_all_url_of_department(page_url)
 
+# get urls of all french department
 def get_url_of_france()
 	page_url = "https://www.immonot.com/annuaire-des-notaires-de-france.html"
 
@@ -86,4 +83,32 @@ def get_url_of_france()
 
 	return urlDptList
 end
-urlDptList=get_url_of_france()
+	# urlDptList=get_url_of_france()
+
+# Final road	
+def get_all_contacts_france()
+	# get all url of all french department
+	urlDptList=get_url_of_france()
+
+	# get all urls of each office for global france (each department)
+	officeUrlList = []
+	officeUrlList2 = []
+	# binding.pry
+
+	# if you want to launch for just few dpt
+	# for i in 3..4 do 
+	urlDptList.each do |urlDpt|
+		# urlDpt = urlDptList[i]
+		officeUrlList = { nameDpt:urlDpt[:nameDpt] , urlByEachDpt:get_all_url_of_department(urlDpt[:url])}
+
+		# puts "--------------------------------"
+		contact=[]
+		officeUrlListtt[:urlByEachDpt].each do |x|
+			contact << get_contact_of_a_lawyer(x[:url])
+		end
+		officeUrlList2 << {nameDpt:urlDpt[:nameDpt] , contact:contact}
+	end
+
+	return officeUrlList2
+end
+# officeUrlList=get_all_contacts_france()
