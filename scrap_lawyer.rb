@@ -6,10 +6,13 @@ require 'rubygems'
 require 'nokogiri' 
 require 'open-uri'
 require 'pry'
+require 'uri'
 
 def get_contact_of_a_lawyer(page_url)
 	# get contact information for one lawyer from his url
 	# parse html
+	# https://stackoverflow.com/questions/39408402/in-ruby-how-to-convert-special-characters-like-%C3%AB-%C3%A0-%C3%A9-%C3%A4-all-to-e-a-e-a/39408577
+	page_url.unicode_normalize(:nfkd).encode('ASCII', replace: '')
 	page = Nokogiri::HTML(open(page_url));
 
 	#MAIN OFFICE
