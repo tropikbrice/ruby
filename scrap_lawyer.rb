@@ -1,4 +1,6 @@
 #!/usr/bin/env ruby
+starTime = Time.now
+puts starTime
 
 require 'rubygems'
 require 'nokogiri' 
@@ -109,9 +111,9 @@ def get_all_contacts_france()
 	officeUrlList2 = []
 	# binding.pry
 
-	# if you want to launch for just few dpt
-	# for i in 3..4 do 
 	urlDptList.each do |urlDpt|
+	# if you want to launch for just few dpt
+	# for i in 3..4 do	
 	# urlDpt = urlDptList[i]
 	officeUrlList = { nameDpt:urlDpt[:nameDpt] , urlByEachDpt:get_all_url_of_department(urlDpt[:url])}
 
@@ -140,7 +142,7 @@ def get_contact_and_put_it_in_spreadsheet(tab)
 
 	scrapFile = session.spreadsheet_by_title("_scrapLawyer");
 
-	sheet = scrapFile.worksheets[0]
+	sheet = scrapFile.worksheets[0];
 
 	i=2
 	tab.each do |dpt|
@@ -178,3 +180,14 @@ end
 #########################################################################
 # Send Email to each main office email
 # toDo
+
+
+endTime = Time.now
+puts endTime
+diff= endTime - starTime
+puts diff
+
+require 'csv'
+CSV.open("trial.csv", "wb") do |csv|
+	csv << [diff]
+end
