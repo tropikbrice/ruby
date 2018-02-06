@@ -7,18 +7,18 @@ require 'uri'
 def get_contact_of_a_lawyer(page_url)
 	# get contact information for one lawyer from his url
 	# parse html
-	binding.pry
 
+	page_url=page_url.unicode_normalize(:nfkd).encode('ASCII', replace: '')
 	page = Nokogiri::HTML(open(page_url));
 
 	#MAIN OFFICE
 	#get name of the main office
-	nameOffice = page.xpath('//span[@itemprop="name"]/h1').text.rstrip
+	nameOffice = page.xpath('//span[@itemprop="name"]/h1').text.unicode_normalize(:nfkd).encode('ASCII', replace: '').rstrip
 	#get adress of the main office
-	streetAdress = page.xpath('//div[@class="notaireItem"]//span[@itemprop="streetAddress"]').text.rstrip
+	streetAdress = page.xpath('//div[@class="notaireItem"]//span[@itemprop="streetAddress"]').text.unicode_normalize(:nfkd).encode('ASCII', replace: '').rstrip
 	#streetAdress = page.xpath('//div[@class="notaireItem"]//span[@itemprop="streetAddress"]').map{|x| x.text.rstrip}
 	#get postCode & town
-	addressLocality= page.xpath('//div[@class="notaireItem"]//span[@itemprop="addressLocality"]').text.rstrip
+	addressLocality= page.xpath('//div[@class="notaireItem"]//span[@itemprop="addressLocality"]').text.unicode_normalize(:nfkd).encode('ASCII', replace: '').rstrip
 	postCode = addressLocality[0..4]
 	town = addressLocality[6..-1]
 	#get main email (if there are several emails)
@@ -27,15 +27,15 @@ def get_contact_of_a_lawyer(page_url)
 
 	#OTHER OFFICE
 	#get name of each employe lawyer of the office
-	nameOtherLawyer = page.xpath('//div[@class="notaireItem secondaire"]//span[@itemprop="name"]/strong').map{|x| x.text.rstrip}
+	nameOtherLawyer = page.xpath('//div[@class="notaireItem secondaire"]//span[@itemprop="name"]/strong').map{|x| x.text.unicode_normalize(:nfkd).encode('ASCII', replace: '').rstrip}
 	#get email of each lawyer of the office
-	emailOther = page.xpath('//div[@class="notaireItem secondaire"]//a[@class="goToMail"]').map{|x| x.text.rstrip}
+	emailOther = page.xpath('//div[@class="notaireItem secondaire"]//a[@class="goToMail"]').map{|x| x.text.unicode_normalize(:nfkd).encode('ASCII', replace: '').rstrip}
 
 	contact = Hash.new
 	contact = { :nameOffice=>nameOffice, :streetAdress=>streetAdress , :postCode=>postCode, :town=>town, :email=>email, :nameOtherLawyer=>nameOtherLawyer, :emailOther=>emailOther}
 
 	#return nameOffice, streetAdress , postCode, town, email, nameOtherLawyer, emailOther
-	# binding.pry
+	binding.pry
 	return contact
 end
 # page_url = "https://www.immonot.com/annuaire-notaires-paris/0000014050/mes-sandra-abitbol-et-emmanuelle-le-gall-abramczyk.html"
