@@ -63,6 +63,7 @@ def get_all_url_of_department(page_url)
 	urlList = []
 	for i in 0..urlPagesSize-1
 		urlPagesList = "https://www.immonot.com"+ urlPages[i][:href]
+		urlPagesList = urlPagesList.unicode_normalize(:nfkd).encode('ASCII', replace: '')
 
 		# urlPagesList.each do |urlToScrap|
 		page2 = Nokogiri::HTML(open( urlPagesList ));
